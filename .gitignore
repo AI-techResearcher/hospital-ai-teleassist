@@ -1,0 +1,53 @@
+# ---- Secrets / environment ----
+.env
+.env.*
+*.env
+.env copy
+!.env.example
+*.pem
+*.key
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ---- Virtual environments ----
+venv/
+.venv/
+env/
+ENV/
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- Databases (regenerated via create_tables.py + seed_data.py) ----
+*.db
+*.sqlite
+*.sqlite3
+
+# ---- Vector store (regenerated via ingest_doctors_Faiss.py) ----
+.faiss_index/
+
+# ---- Editor / IDE / tooling ----
+.vscode/
+.idea/
+.claude/
+*.swp
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+
+# ---- Stray backup/copy files ----
+* copy*
+*copy.py
