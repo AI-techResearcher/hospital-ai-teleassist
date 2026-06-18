@@ -188,17 +188,14 @@ aiteleassist/
 │
 ├── Apointment_agent/                     # Appointment ReAct agent + DB tooling
 │   ├── appointments_agent.py             #   14 tools: search / availability / book / cancel
-│   ├── create_tables.py                  #   normalized schema + triggers
-│   ├── seed_data.py                      #   demo patients, doctors, slots
+│   ├── create_tables.py                  #   normalized schema + triggers + demo seed data
 │   └── doctors_by_specialty.json         #   doctor profiles (RAG + seed source)
 │
 ├── twillio_comms_agent/twillio_call/     # Twilio + OpenAI Realtime voice agent
 │   └── production_twilio_agent.py
 │
-├── orchestrator_service/                 # Lightweight orchestrator service container
-│
-├── Dockerfile.orchestrator / Dockerfile.twilio   # AWS/ECS build path (deploy.sh)
-├── docker-compose.prod.yml               # Local full-stack deployment
+├── Dockerfile.orchestrator / Dockerfile.twilio   # Container build (compose + ECS)
+├── docker-compose.production.yml         # Local full-stack deployment
 ├── aws-ecs-compose.yml / terraform/      # AWS ECS Fargate + IaC
 ├── nginx/ · monitoring/                  # Reverse proxy + Prometheus config
 └── deploy.sh                             # Build → Terraform → ECS → health check
@@ -267,7 +264,7 @@ For **live phone calls**, expose port 5050 with a tunnel (e.g. ngrok) and point 
 
 ```bash
 cp .env.example .env             # fill in keys
-docker compose -f docker-compose.prod.yml up --build
+docker compose -f docker-compose.production.yml up --build
 ```
 
 This brings up the voice agent, orchestrator, Nginx reverse proxy, and supporting services.
