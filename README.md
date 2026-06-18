@@ -298,24 +298,6 @@ Secrets (OpenAI, Twilio, database URL) are pulled from **AWS Secrets Manager** a
 
 ---
 
-## 🔐 Security Notes
-
-- No secrets are committed — all configuration is via environment variables (`.env.example` documents every variable).
-- TLS 1.2/1.3 termination at Nginx; rate limiting on API and Twilio webhook zones.
-- Non-root container users; ECR image scanning on push.
-- PHI redaction and conversation-logging flags are configurable.
-
----
-
-## 🗺️ Roadmap
-
-- [ ] Replace SQLite with PostgreSQL as the default appointment store
-- [ ] Add automated test coverage + CI (GitHub Actions)
-- [ ] HIPAA-grade audit logging
-- [ ] Multi-language voice support
-
----
-
 <div align="center">
 
 Built with FastAPI, LangGraph, OpenAI, and Twilio.
