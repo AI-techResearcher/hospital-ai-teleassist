@@ -1,0 +1,91 @@
+# AWS ECS Task Definition for Hospital AI System
+version: '3'
+
+services:
+  # AWS Application Load Balancer Configuration
+  # This would be configured through AWS Console or Terraform
+
+  # Twilio Agent Service
+  twilio-agent:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/hospital-twilio-agent:${IMAGE_TAG}
+    cpu: 512
+    memory: 1024
+    essential: true
+    portMappings:
+      - containerPort: 5050
+        protocol: tcp
+    environment:
+      - name: "OPENAI_KEY"
+        valueFrom: 
+          secretsManagerArn: "arn:aws:secretsmanager:${AWS_REGION}:${AWS_ACCOUNT_ID}:secret:hospital/openai-key"
+      - name: "TWILIO_ACCOUNT_SID"
+        valueFrom:
+          secretsManagerArn: "arn:aws:secretsmanager:${AWS_REGION}:${AWS_ACCOUNT_ID}:secret:hospital/twilio-credentials"
+      - name: "TWILIO_AUTH_TOKEN"
+        valueFrom:
+          secretsManagerArn: "arn:aws:secretsmanager:${AWS_REGION}:${AWS_ACCOUNT_ID}:secret:hospital/twilio-credentials"
+      - name: "TWILIO_PHONE_NUMBER"
+        value: "${TWILIO_PHONE_NUMBER}"
+      - name: "PUBLIC_URL"
+        value: "https://${DOMAIN_NAME}"
+      - name: "HOSPITAL_ORCHESTRATOR_URL"
+        value: "http://hospital-orchestrator.hospital-ai.local:8000"
+      - name: "AWS_REGION"
+        value: "${AWS_REGION}"
+    logConfiguration:
+      logDriver: awslogs
+      options:
+        awslogs-group: /hospital-ai/twilio-agent
+        awslogs-region: ${AWS_REGION}
+        awslogs-stream-prefix: ecs
+    healthCheck:
+      command:
+        - CMD-SHELL
+        - "curl -f http://localhost:5050/health || exit 1"
+      interval: 30
+      timeout: 10
+      retries: 3
+      startPeriod: 60
+
+  # Hospital Orchestrator Service
+  hospital-orchestrator:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/hospital-orchestrator:${IMAGE_TAG}
+    cpu: 1024
+    memory: 2048
+    essential: true
+    portMappings:
+      - containerPort: 8000
+        protocol: tcp
+    environment:
+      - name: "OPENAI_API_KEY"
+        valueFrom:
+          secretsManagerArn: "arn:aws:secretsmanager:${AWS_REGION}:${AWS_ACCOUNT_ID}:secret:hospital/openai-key"
+      - name: "DATABASE_URL"
+        valueFrom:
+          secretsManagerArn: "arn:aws:secretsmanager:${AWS_REGION}:${AWS_ACCOUNT_ID}:secret:hospital/database-url"
+      - name: "REDIS_URL"
+        value: "${REDIS_CLUSTER_ENDPOINT}"
+      - name: "AWS_REGION"
+        value: "${AWS_REGION}"
+      - name: "ENVIRONMENT"
+        value: "production"
+    logConfiguration:
+      logDriver: awslogs
+      options:
+        awslogs-group: /hospital-ai/orchestrator
+        awslogs-region: ${AWS_REGION}
+        awslogs-stream-prefix: ecs
+    healthCheck:
+      command:
+        - CMD-SHELL
+        - "curl -f http://localhost:8000/health || exit 1"
+      interval: 30
+      timeout: 10
+      retries: 5
+      startPeriod: 120
+
+# Network Configuration
+networks:
+  default:
+    external: true
+    name: hospital-ai-network

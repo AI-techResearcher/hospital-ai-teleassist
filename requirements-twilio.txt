@@ -1,0 +1,30 @@
+# Twilio voice agent — production runtime dependencies
+# Used by Dockerfile.twilio (root build context for the AWS/ECS deploy path).
+
+# Core web framework + ASGI server
+fastapi==0.115.8
+uvicorn[standard]==0.34.0
+gunicorn==23.0.0
+
+# Real-time media streaming (Twilio <-> OpenAI Realtime API)
+websockets==15.0
+aiohttp==3.11.12
+aiofiles==24.1.0
+
+# Twilio SDK
+twilio==9.4.5
+
+# OpenAI (Realtime API client)
+openai==1.109.1
+
+# HTTP clients
+httpx==0.28.1
+requests==2.32.3
+
+# Config & validation
+python-dotenv==1.0.1
+pydantic==2.10.6
+python-multipart==0.0.20
+
+# Logging
+loguru==0.7.3

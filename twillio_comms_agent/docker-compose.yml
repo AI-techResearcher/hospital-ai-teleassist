@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    container_name: hospital_twilio_agent
+    restart: unless-stopped
+    env_file:
+      - ./twillio_call/.env
+    expose:
+      - "5050"
+    volumes:
+      - ./twillio_call:/app:ro
+      - ./data:/app/data:rw
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: hospital_twilio_nginx
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
