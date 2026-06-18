@@ -25,8 +25,6 @@
 
 It is architected as a set of **containerized microservices** with a LangGraph multi-agent "brain," resilience patterns (circuit breakers, retries, timeouts), and a full production deployment story on AWS (ECS Fargate + Terraform) with Prometheus/Grafana observability.
 
-> ⚕️ **Disclaimer:** This is an engineering portfolio / research project. It is **not** a medical device and does not provide real medical advice or diagnosis.
-
 ---
 
 ## ✨ Key Features
